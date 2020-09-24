@@ -1,0 +1,8 @@
+﻿  Client.cpp
+  ItemType.cpp
+C:\Users\kjeng\OneDrive\바탕 화면\Real_Estate_Listing\Real_Estate_Listing\ItemType.cpp(72,9): warning C4101: 'result' :참조되지 않은 지역 변수입니다.
+  sorted.cpp
+  StrTypeAugmented.cpp
+  코드를 생성하고 있습니다...
+C:\Users\kjeng\OneDrive\바탕 화면\Real_Estate_Listing\Real_Estate_Listing\ItemType.cpp(83): warning C4715: 'HouseType::operator<': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  Real_Estate_Listing.vcxproj -> C:\Users\kjeng\OneDrive\바탕 화면\Real_Estate_Listing\Debug\Real_Estate_Listing.exe
