@@ -50,6 +50,11 @@ public:
     // Post: If (stack is empty), EmptyStack exception is thrown;
     //      'other' parameter contain reverse sequence items of *this 
     */
+    bool identical(StackType other);
+    //funcion : compare with other stacktype if this and other stacktype is 
+    //          identical return true else return false
+    ItemType Top_A();
+    // Fcuntion : return recently added item
 private:
     int top;
     ItemType  items[MAX_ITEMS];	
@@ -101,6 +106,42 @@ ItemType StackType<ItemType>::Top()
     throw EmptyStack();
   return items[top];
 }
+
+template<class ItemType>
+bool StackType<ItemType>::identical(StackType other) {
+    int count = 0;
+    while (!IsEmpty() || !other.IsEmpty()) {
+        if (items[top] != other.items[other.top]) {
+            count++;
+            top += count;
+            other.top += count;
+            return false;
+        }
+        top--;
+        other.top--;
+        count++;
+    }
+    if (top != -1 && other.top != -1) {
+        top += count;
+        other.top += count;
+        return false;
+    }
+    else {
+        top += count;
+        other.top += count;
+    }
+    return true;
+    
+}
+
+template<class ItemType>
+ItemType StackType<ItemType>:: Top_A() {
+    if (IsEmpty())
+        throw EmptyStack();
+    else
+        return items[top];
+}
+
 
 /*template<class ItemType>
 void StackType<ItemType>::Inverse(StackType& other)

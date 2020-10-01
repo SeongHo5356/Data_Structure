@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 int main() {
 
 	StackType<int> stack;
@@ -39,3 +40,4 @@ int main() {
 
 	return 0;
 }
+
