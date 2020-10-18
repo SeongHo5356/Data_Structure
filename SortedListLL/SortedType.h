@@ -61,6 +61,7 @@ public:
   //       item is a copy of element at current position.
 
   void MergeLists_B(SortedType<ItemType>& other, SortedType<ItemType>& reuslt);
+  void PrintReverse();
 
 
 private:
@@ -294,5 +295,19 @@ void SortedType<ItemType>::MergeLists_B(SortedType<ItemType>& other, SortedType<
     //   길이가 짧은 쪽이 끝났을 경우 긴쪽을 그 뒤에 붙이는 예외 처리를 하도록 한다.
     // EX) while(ptr != NULL && ptr2 != NULL) 그리고 둘 중 하나가 먼저 끝났을 때에 대한 처리
     
+
+}
+
+template <class ItemType>
+void SortedType<ItemType>::PrintReverse() {
+
+    for (int i = length; i > 0; i--) {
+        NodeType<ItemType>* location = listData;
+        for (int k = 0; k < i - 1; k++) {
+            location = location->next;
+            cout << location->info << '\t';
+        }
+        delete location;
+    }
 
 }
