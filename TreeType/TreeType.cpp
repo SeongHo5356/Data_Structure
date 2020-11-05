@@ -354,10 +354,11 @@ TreeNode* TreeType::PtrToSuccessor_recursive(TreeNode*& tree) // 파라메터 타입: 
     if (tree->left != NULL) //왼쪽 노드가 NULL이 아니면
         PtrToSuccessor_recursive(tree->left); // general case
     else { // base case
-        TreeNode* tempPtr = tree; // tree 값을 backup
+        TreeNode* tempPtr = tree->left; // tree 값을 backup
         // tree가 tree의 right child를 가리키도록 수정
-        tree = tree->right;
+        tree->left = tempPtr->right;
         //right child가 null인 경우 자연스럽게 case1을 만족
+
         return tempPtr;
         // tempPtr을 리턴
     }
@@ -365,19 +366,82 @@ TreeNode* TreeType::PtrToSuccessor_recursive(TreeNode*& tree) // 파라메터 타입: 
 // Nonrecursive version:
 TreeNode* TreeType::PtrToSuccessor_non_recursive(TreeNode*& tree) // 파라메터 타입: (1) TreeNode* or (2) TreeNode*&
 {
-    while (tree->left != NULL) // 제일 왼쪽 노드까지 내려간다
+    while (tree->left->left != NULL) // 제일 왼쪽 노드까지 내려간다
         tree = tree->left;
-    TreeNode* tempPtr = tree; // tree 값을 backup
+    TreeNode* tempParentPtr = tree;
+    TreeNode* tempPtr = tree->left; // tree 값을 backup
+    tree->left = NULL;
     // tree가 tree의 right child를 가리키도록 수정
-    tree = tree->right;
-
+    tree = tempPtr->right;
+    //right child가 null인 경우 자연스럽게 case1을 만족
     return tempPtr;
 }
+
+
+
+
+
+void TreeType::DeleteNode(TreeNode*& tree) //이미 구현된 소스에 수정하세요.
+{
+    ItemType data;
+    TreeNode* tempPtr;
+    tempPtr = tree;
+    if (tree->left == NULL)
+    {
+        tree = tree->right;
+        delete tempPtr;
+    }
+    else if (tree->right == NULL)
+    {
+        tree = tree->left;
+        delete tempPtr;
+    }
+    else
+    {
+        //삭제하려는 노드의 오른쪽에서 PtrToSuccessor()를 사용한다.
+        TreeNode* TempPtr = PtrToSuccessor_recursive(tree->right);
+        //값을 대치하고 노드 삭제.
+        tree->info = TempPtr->info;
+        delete TempPtr;
+    }
+}
+
+bool Imp_IsBST(TreeNode* tree, ItemType& min, ItemType& max);
+
+bool TreeType::IsBST() // 클래스에 IsBST 함수를 선언하세요.
+{
+    ItemType min, max;
+    return Imp_IsBST(root, min, max);
+}
+bool Imp_IsBST(TreeNode* tree, ItemType& min, ItemType& max)
+{
+    bool isBST;
+    if (tree == NULL) return true; // emptry tree는 BST
+    //왼쪽 노드가 NULL이 아니면, 왼쪽 서브트리가 BST인지 체크하고 tree->info와 비교
+    if (tree->left != NULL) {
+        isBST = Imp_IsBST(tree->left, min, max);
+        // 왼쪽 서브트리가 BST가 아니거나 tree->info가 왼쪽 서브트리 값보다 작은 경우
+        if (!isBST || tree->info <= tree->left->info) return false;
+    }
+    //오른쪽 노드가 NULL이 아니면, 오른쪽 서브트리가 BST인지 체크하고 tree->info와 비교
+    if (tree->right != NULL) {
+        // 왼쪽 서브트리 코드 참조하여 작성
+        isBST = Imp_IsBST(tree->right, min, max);
+        // 왼쪽 서브트리가 BST가 아니거나 tree->info가 왼쪽 서브트리 값보다 작은 경우
+        if (!isBST || tree->info >= tree->right->info) return false;
+    }
+    min = (tree->left == NULL) ? tree->info : tree->left->info; max = (tree->right == NULL) ? tree->info : tree->right->info; // min, max의 값을 설정
+    return true;
+}
+
+
+int Imp_LeafCount(TreeNode* tree);
+
 int TreeType::LeafCount()
 {
     return Imp_LeafCount(root);
 }
-int TreeType::Imp_LeafCount(TreeNode* tree)
+int Imp_LeafCount(TreeNode* tree)
 {
     if (tree == NULL) //리프 노드가 아닐 경우.
         return 0;
@@ -389,3 +453,32 @@ int TreeType::Imp_LeafCount(TreeNode* tree)
     }
 }
 
+//4가지 경우로 나누어서 재귀 호출을 할 수 있슴.
+//1. 트리가 비었거나, 마지막 노드인 경우
+//2. 왼쪽에만 노드가 있을 경우
+//3. 오른쪽에만 노드가 있을 경우
+//4. 노드를 2개 가지고 있을 경우
+int Imp_SingleParentCount(TreeNode* tree);
+
+int TreeType::SingleParentCount()
+{
+    return Imp_SingleParentCount(root);
+}
+int Imp_SingleParentCount(TreeNode* tree)
+{
+    if (tree == NULL) {
+        return 0;
+    }
+    else if (tree->left == NULL && tree->right != NULL) {
+        //1개의 노드를 가지므로 오른쪽 노드를 재귀 호출하고 1을 더하여 리턴.
+        return Imp_SingleParentCount(tree->right) + 1;
+    }
+    else if (tree->right == NULL && tree->left != NULL) {
+        //1개의 노드를 가지므로 왼쪽 노드를 재귀 호출하고 1을 더하여 리턴.
+        return Imp_SingleParentCount(tree->left) + 1;
+    }
+    else {
+        //노드의 양쪽을 재귀 호출하여 더한다.
+        return Imp_SingleParentCount(tree->right) + Imp_SingleParentCount(tree->left);
+    }
+}
