@@ -1,5 +1,4 @@
 #include <iostream>
-#include "QueType.h"
 
 using namespace std;
 
@@ -91,7 +90,6 @@ bool QueType::IsFull() const
 
 void QueType::Enqueue(ItemType newItem)
 {
-    
     if (IsFull())
         throw FullQueue();
     else
